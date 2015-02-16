@@ -4,6 +4,8 @@ import json
 from Infograb import realmget
 from Infograb import petid_get
 from Infograb import write_to_master
+import os, sys
+
 
 second_round = False
 r1_hi = {}
@@ -11,7 +13,51 @@ r1_lo = {}
 r2_hi = {}
 r2_lo = {}
 PET_QUALITY = ['Trash', 'Poor', 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary']
-valid_realms = ['kilrogg', 'darksorrow', 'mazrigos', 'frostwhisper']
+valid_realms = valid_realms = ['aegwynn', 'aerie-peak', 'agamaggan', 'aggra-portugues', 'aggramar', 'ahnqiraj',
+                               'alakir', 'alexstrasza', 'alleria', 'alonsus', 'amanthul', 'ambossar', 'anachronos',
+                               'anetheron', 'antonidas', 'anubarak', 'arakarahm', 'arathi', 'arathor', 'archimonde',
+                               'area-52', 'argent-dawn', 'arthas', 'arygos', 'ashenvale', 'aszune', 'auchindoun',
+                               'azjolnerub', 'azshara', 'azuregos', 'azuremyst', 'baelgun', 'balnazzar', 'blackhand',
+                               'blackmoore', 'blackrock', 'blackscar', 'blades-edge', 'bladefist', 'bloodfeather',
+                               'bloodhoof', 'bloodscalp', 'blutkessel', 'booty-bay', 'borean-tundra', 'boulderfist',
+                               'bronze-dragonflight', 'bronzebeard', 'burning-blade', 'burning-steppes', 'cthun',
+                               'chamber-of-aspects', 'chants-eternels', 'chogall', 'chromaggus', 'colinas-pardas',
+                               'confrerie-du-thorium', 'conseil-des-ombres', 'crushridge', 'culte-de-la-rive-noire',
+                               'daggerspine', 'dalaran', 'dalvengyr', 'darkmoon-faire', 'darksorrow', 'darkspear',
+                               'das-konsortium', 'das-syndikat', 'deathguard', 'deathweaver', 'deathwing', 'deepholm',
+                               'defias-brotherhood', 'dentarg', 'der-mithrilorden', 'der-rat-von-dalaran',
+                               'der-abyssische-rat', 'destromath', 'dethecus', 'die-aldor', 'die-arguswacht',
+                               'die-nachtwache', 'die-silberne-hand', 'die-todeskrallen', 'die-ewige-wacht',
+                               'doomhammer', 'draenor', 'dragonblight', 'dragonmaw', 'drakthul', 'drekthar', 'dun-modr',
+                               'dun-morogh', 'dunemaul', 'durotan', 'earthen-ring', 'echsenkessel', 'eitrigg',
+                               'eldrethalas', 'elune', 'emerald-dream', 'emeriss', 'eonar', 'eredar', 'eversong',
+                               'executus', 'exodar', 'festung-der-sturme', 'fordragon', 'forscherliga', 'frostmane',
+                               'frostmourne', 'frostwhisper', 'frostwolf', 'galakrond', 'garona', 'garrosh', 'genjuros',
+                               'ghostlands', 'gilneas', 'goldrinn', 'gordunni', 'gorgonnash', 'greymane', 'grim-batol',
+                               'grom', 'guldan', 'hakkar', 'haomarush', 'hellfire', 'hellscream', 'howling-fjord',
+                               'hyjal', 'illidan', 'jaedenar', 'kaelthas', 'karazhan', 'kargath', 'kazzak', 'kelthuzad',
+                               'khadgar', 'khaz-modan', 'khazgoroth', 'kiljaeden', 'kilrogg', 'kirin-tor', 'korgall',
+                               'kragjin', 'krasus', 'kul-tiras', 'kult-der-verdammten', 'la-croisade-ecarlate',
+                               'laughing-skull', 'les-clairvoyants', 'les-sentinelles', 'lich-king', 'lightbringer',
+                               'lightnings-blade', 'lordaeron', 'los-errantes', 'lothar', 'madmortem', 'magtheridon',
+                               'malganis', 'malfurion', 'malorne', 'malygos', 'mannoroth', 'marecage-de-zangar',
+                               'mazrigos', 'medivh', 'minahonda', 'moonglade', 'mugthol', 'nagrand', 'nathrezim',
+                               'naxxramas', 'nazjatar', 'nefarian', 'nemesis', 'neptulon', 'nerzhul', 'nerathor',
+                               'nethersturm', 'nordrassil', 'norgannon', 'nozdormu', 'onyxia', 'outland', 'perenolde',
+                               'pozzo-delleternita', 'proudmoore', 'quelthalas', 'ragnaros', 'rajaxx', 'rashgarroth',
+                               'ravencrest', 'ravenholdt', 'razuvious', 'rexxar', 'runetotem', 'sanguino', 'sargeras',
+                               'saurfang', 'scarshield-legion', 'senjin', 'shadowsong', 'shattered-halls',
+                               'shattered-hand', 'shattrath', 'shendralar', 'silvermoon', 'sinstralis', 'skullcrusher',
+                               'soulflayer', 'spinebreaker', 'sporeggar', 'steamwheedle-cartel', 'stormrage',
+                               'stormreaver', 'stormscale', 'sunstrider', 'sylvanas', 'taerar', 'talnivarr',
+                               'tarren-mill', 'teldrassil', 'temple-noir', 'terenas', 'terokkar', 'terrordar',
+                               'the-maelstrom', 'the-shatar', 'the-venture-co', 'theradras', 'thermaplugg', 'thrall',
+                               'throkferoth', 'thunderhorn', 'tichondrius', 'tirion', 'todeswache', 'trollbane',
+                               'turalyon', 'twilights-hammer', 'twisting-nether', 'tyrande', 'uldaman', 'ulduar',
+                               'uldum', 'ungoro', 'varimathras', 'vashj', 'veklor', 'veknilash', 'voljin', 'wildhammer',
+                               'wrathbringer', 'xavius', 'ysera', 'ysondre', 'zenedar', 'zirkel-des-cenarius', 'zuljin',
+                               'zuluhed']
+
 spinner = '||//--\\\\'
 server_selection = []
 
@@ -53,7 +99,8 @@ def get_server():
 		order = 'second'
 	else:
 		order = 'first'
-	message = 'Enter ' + order + ' server name :kilrogg,darksorrow,mazrigos,frostwhisper\n>>'
+	print('We need two server names, enter them when asked ,they are case sensitive')
+	message = 'Enter ' + order + ' server name eg :kilrogg,darksorrow,mazrigos,frostwhisper,alakir,aerie-peak etc \n>>'
 	server = str(input(str(message)))
 	server_selection.append(server)
 	if server in valid_realms:
@@ -66,6 +113,7 @@ def get_server():
 
 def main():
 	global second_round, server1
+
 	server1 = get_server()
 	print('Accessing\n', server1)
 	create_pet_auction_lists(realmget(server1))
@@ -73,7 +121,6 @@ def main():
 	server2 = get_server()
 	print('Accessing\n', server2)
 	create_pet_auction_lists(realmget(server2))
-
 
 def create_pet_auction_lists(realm):
 	if second_round == False:
@@ -137,3 +184,8 @@ def create_pet_auction_lists(realm):
 		print('details saved to bargain_hunter.txt')
 
 main()
+try:
+	os.remove("bargains.txt")
+except:
+	os.rename("temp.txt", "bargains.txt ")
+os.rename("temp.txt", "bargains.txt ")

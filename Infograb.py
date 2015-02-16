@@ -45,7 +45,7 @@ def main():
 
 
 def write_to_master(auc_list):
-	with open('bargains.txt', 'a') as master:  # change w so it adds not overwrites
+	with open('temp.txt', 'a') as master:
 		for line in auc_list:
 			master.write(str(line))
 
