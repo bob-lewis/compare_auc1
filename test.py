@@ -1,10 +1,12 @@
 __author__ = 'Bob'
-import httplib2
 import json
+import os
+
+import httplib2
+
 from Infograb import realmget
 from Infograb import petid_get
 from Infograb import write_to_master
-import os, sys
 
 
 second_round = False
@@ -71,12 +73,13 @@ def bargain_hunter(sell_server_hi, sell_server_lo, buy_server, cheap_server, exp
 				buy_cost = buy_server[auction]
 				low_profit = (sell_server_lo[auction] - buy_server[auction])
 				high_profit = (sell_server_hi[auction] - buy_server[auction])
-				line = (' \nPossible bargain: ' + auction + ' on ' + str(cheap_server) + ' costs ' + str(buy_cost) +
-				        ' and on ' + str(exp_server) + ' costs at least ' + str(sell_cost) +
-				        ' \n...a potential profit of between ' + str(low_profit) + ' up to possibly ' + str(
+				line = (' \nPossible bargain: ' + auction + ' on ' + str(cheap_server) + ' costs ' + str(
+					buy_cost) + ' and on ' + str(exp_server) + ' costs at least ' + str(
+					sell_cost) + ' \n...a potential profit of between ' + str(low_profit) + ' up to possibly ' + str(
 					high_profit) + ' \n' + '*' * 20)
 				bargains.append(line)
 	write_to_master(bargains)
+
 
 def page_get(server):
 	print(str('http://eu.battle.net/api/wow/auction/data/' + server))
@@ -121,6 +124,7 @@ def main():
 	server2 = get_server()
 	print('Accessing\n', server2)
 	create_pet_auction_lists(realmget(server2))
+
 
 def create_pet_auction_lists(realm):
 	if second_round == False:
@@ -176,14 +180,15 @@ def create_pet_auction_lists(realm):
 		else:
 			lo[name] = price
 
-		# print(line, '\n')
 	if second_round:
 		bargain_hunter(r1_hi, r1_lo, r2_lo, server_selection[1], server_selection[0])
 		bargain_hunter(r2_hi, r2_lo, r1_lo, server_selection[0], server_selection[1])
 		print('#' * 25)
 		print('details saved to bargain_hunter.txt')
 
+
 main()
+
 try:
 	os.remove("bargains.txt")
 except:
