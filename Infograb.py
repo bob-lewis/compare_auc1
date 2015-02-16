@@ -39,18 +39,17 @@ def realmget(auc_api):
 
 
 def main():
-	aucapi = 'None'
+	auc_api = 'None'
 
-
-realmget(aucapi)
+	realmget(auc_api)
 
 
 def write_to_master(auc_list):
-	with open('masterlist.txt', 'w') as master:  # change w so it adds not overwrites
+	with open('bargains.txt', 'a') as master:  # change w so it adds not overwrites
 		for line in auc_list:
 			master.write(str(line))
 
-	print('Master file write completed Completed')
+	print('details written to bargains.txt')
 
 
 if __name__ == '__main__':
